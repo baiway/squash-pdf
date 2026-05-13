@@ -2,18 +2,6 @@
 
 Compresses vector-heavy PDFs by rasterising their pages. Particularly effective for [GoodNotes](https://www.goodnotes.com/) exports, which store handwriting as dense vector paths that standard PDF compressors can't touch. A typical GoodNotes export might go from 24 MB to 2.4 MB at 300 DPI — sharp enough to read comfortably on screen or print.
 
-## Prerequisites
-
-Ghostscript must be installed:
-
-```sh
-# macOS
-brew install ghostscript
-
-# Debian / Ubuntu
-apt install ghostscript
-```
-
 ## Installation
 
 ```sh
