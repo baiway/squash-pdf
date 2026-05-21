@@ -14,7 +14,7 @@ def _rasterise(input_pdf: Path, output_pdf: Path, dpi: int) -> int:
     for page in src:
         pix = page.get_pixmap(dpi=dpi)
         img_page = out.new_page(width=page.rect.width, height=page.rect.height)
-        img_page.insert_image(img_page.rect, pixmap=pix)
+        img_page.insert_image(img_page.rect, stream=pix.tobytes("jpeg"))
     out.save(str(output_pdf))
     return len(src)
 
