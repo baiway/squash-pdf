@@ -8,13 +8,23 @@ from pathlib import Path
 import fitz
 
 
+def _effective_dpi(page: fitz.Page, requested_dpi: int) -> int:
+    images = page.get_images()
+    if not images:
+        return requested_dpi
+    largest = max(images, key=lambda img: img[2] * img[3])
+    w_px, h_px = largest[2], largest[3]
+    native_dpi = min(w_px / page.rect.width * 72, h_px / page.rect.height * 72)
+    return min(requested_dpi, round(native_dpi))
+
+
 def _rasterise(input_pdf: Path, output_pdf: Path, dpi: int) -> int:
     src = fitz.open(str(input_pdf))
     out = fitz.open()
     for page in src:
-        pix = page.get_pixmap(dpi=dpi)
+        pix = page.get_pixmap(dpi=_effective_dpi(page, dpi))
         img_page = out.new_page(width=page.rect.width, height=page.rect.height)
-        img_page.insert_image(img_page.rect, stream=pix.tobytes("jpeg"))
+        img_page.insert_image(img_page.rect, stream=pix.tobytes("jpeg", jpg_quality=85))
     out.save(str(output_pdf))
     return len(src)
 
